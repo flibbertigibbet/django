@@ -72,12 +72,26 @@ class Invalid(models.Model):
 
 
 class HasNulls(models.Model):
+    """ Simple model to test allowing null values to import from the has_nulls Shapefile.
+
+    Tests a numeric (some_number) and a string (name) nullable field.
+    """
     uuid = models.CharField(primary_key=True, editable=False, max_length=36)
     geom = models.PolygonField(srid=4326, blank=True, null=True)
     fill_color = models.CharField(blank=False, null=False, max_length=20)
-    name = models.CharField(blank=True, null=True, max_length=20)
     fill_opacity = models.FloatField(blank=False, null=False)
     some_number = models.FloatField(blank=True, null=True)
+    name = models.CharField(blank=True, null=True, max_length=20)
+
+
+class DoesNotAllowNulls(models.Model):
+    """Disallow nulls on the two fields that contain them in the has_nulls Shapefile."""
+    uuid = models.CharField(primary_key=True, editable=False, max_length=36)
+    geom = models.PolygonField(srid=4326, blank=True, null=True)
+    fill_color = models.CharField(blank=False, null=False, max_length=20)
+    fill_opacity = models.FloatField(blank=False, null=False)
+    some_number = models.FloatField(blank=False, null=False)
+    name = models.CharField(blank=False, null=False, max_length=20)
 
 
 # Mapping dictionaries for the models above.

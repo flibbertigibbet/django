@@ -20,8 +20,8 @@ if HAS_GEOS:
     from django.contrib.gis.gdal import DataSource
 
     from .models import (
-        City, County, CountyFeat, HasNulls, Interstate, ICity1, ICity2, Invalid, State,
-        city_mapping, co_mapping, cofeat_mapping, inter_mapping, has_nulls_mapping,
+        City, County, CountyFeat, DoesNotAllowNulls, HasNulls, Interstate, ICity1, ICity2,
+        Invalid, State, city_mapping, co_mapping, cofeat_mapping, inter_mapping, has_nulls_mapping,
     )
 
 
@@ -340,6 +340,13 @@ class LayerMapTest(TestCase):
                          'Should have no polygons with an empty string for a name')
         self.assertEqual(1, HasNulls.objects.filter(name__isnull=True).count(),
                          'Should have one polygon with a null name field')
+
+    def test_null_number_imported_not_allowed(self):
+        "Test LayerMapping import of a shapefile with nulls to fields that do not permit them."
+        lm = LayerMapping(DoesNotAllowNulls, has_nulls_shp, has_nulls_mapping)
+        lm.save(silent=True)
+        self.assertEqual(0, DoesNotAllowNulls.objects.all().count(),
+                         'Expect none of the fields to import when nulls not allowed.')
 
 
 class OtherRouter(object):
