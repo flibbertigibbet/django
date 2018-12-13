@@ -319,8 +319,8 @@ class LayerMapTest(TestCase):
         self.assertEqual(City.objects.count(), 1)
         self.assertEqual(City.objects.all()[0].name, "Zürich")
 
-    def test_nulls_imported(self):
-        "Test LayerMapping import of a shapefile with null values."
+    def test_null_number_imported(self):
+        "Test LayerMapping import of a shapefile with a null numeric value."
         lm = LayerMapping(HasNulls, has_nulls_shp, has_nulls_mapping)
         lm.save()
         self.assertEqual(3, HasNulls.objects.count(),
@@ -329,6 +329,15 @@ class LayerMapTest(TestCase):
                          'Should have one polygon with a zero some_number field')
         self.assertEqual(1, HasNulls.objects.filter(some_number__isnull=True).count(),
                          'Should have one polygon with a null some_number field')
+
+    def test_null_string_imported(self):
+        "Test LayerMapping import of a shapefile with a null string value."
+        lm = LayerMapping(HasNulls, has_nulls_shp, has_nulls_mapping)
+        lm.save()
+        self.assertEqual(0, HasNulls.objects.filter(name='None').count(),
+                         'Should have no polygons with "None" as a name')
+        self.assertEqual(0, HasNulls.objects.filter(name='').count(),
+                         'Should have no polygons with an empty string for a name')
         self.assertEqual(1, HasNulls.objects.filter(name__isnull=True).count(),
                          'Should have one polygon with a null name field')
 
