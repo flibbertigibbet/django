@@ -17,6 +17,7 @@ wgs_84_wkt = (
 )
 # Using a regex because of small differences depending on GDAL versions.
 # AUTHORITY part has been added in GDAL 2.2.
+
 wgs_84_wkt_regex = (
     r'^GEOGCS\["GCS_WGS_1984",DATUM\["WGS_1984",SPHEROID\["WGS_(19)?84",'
     r'6378137,298.257223563\]\],PRIMEM\["Greenwich",0\],UNIT\["Degree",'
@@ -59,7 +60,28 @@ ds_list = (
         fields={'float': OFTReal, 'int': OFTInteger, 'str': OFTString},
         extent=(-1.01513, -0.558245, 0.161876, 0.839637),  # Got extent from QGIS
         srs_wkt=wgs_84_wkt,
-    )
+    ),
+    TestDS(
+        'has_nulls', nfeat=3, nfld=5, geom='POLYGON', gtype=3, driver='ESRI Shapefile',
+        fields={
+            'UUID': OFTString,
+            'NAME': OFTString,
+            'SOME_NUMBE': OFTReal,
+            'FILL_COLOR': OFTString,
+            'FILL_OPACI': OFTReal,
+        },
+        extent=(-75.274200, 39.846504, -74.959717, 40.119040),  # Got extent from QGIS
+        srs_wkt=wgs_84_wkt,
+        field_values={
+            'UUID': ['1378c26f-cbe6-44b0-929f-eb330d4991f5', 'fa2ba67c-a135-4338-b924-a9622b5d869f',
+                     '4494c1f3-55ab-4256-b365-12115cb388d5'],
+            'NAME': ['Philadelphia', None, 'north'],
+            'SOME_NUMBE': [1.001, None, 0.0],
+            'FILL_COLOR': ['#4639bc', '#dfc827', '#982424'],
+            'FILL_OPACI': [0.5, 0.5, 0.8]
+        },
+        fids=range(3)
+    ),
 )
 
 bad_ds = (TestDS('foo'),)
