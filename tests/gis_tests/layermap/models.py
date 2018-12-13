@@ -71,6 +71,15 @@ class Invalid(models.Model):
     point = models.PointField()
 
 
+class HasNulls(models.Model):
+    uuid = models.CharField(primary_key=True, editable=False, max_length=36)
+    geom = models.PolygonField(srid=4326, blank=True, null=True)
+    fill_color = models.CharField(blank=False, null=False, max_length=20)
+    name = models.CharField(blank=True, null=True, max_length=20)
+    fill_opacity = models.FloatField(blank=False, null=False)
+    some_number = models.FloatField(blank=True, null=True)
+
+
 # Mapping dictionaries for the models above.
 co_mapping = {
     'name': 'Name',
@@ -94,3 +103,11 @@ inter_mapping = {'name': 'Name',
                  'length': 'Length',
                  'path': 'LINESTRING',
                  }
+
+has_nulls_mapping = {'geom': 'POLYGON',
+                     'uuid': 'UUID',
+                     'fill_color': 'FILL_COLOR',
+                     'name': 'NAME',
+                     'fill_opacity': 'FILL_OPACI',
+                     'some_number': 'SOME_NUMBE',
+                     }

@@ -20,8 +20,8 @@ if HAS_GEOS:
     from django.contrib.gis.gdal import DataSource
 
     from .models import (
-        City, County, CountyFeat, Interstate, ICity1, ICity2, Invalid, State,
-        city_mapping, co_mapping, cofeat_mapping, inter_mapping,
+        City, County, CountyFeat, HasNulls, Interstate, ICity1, ICity2, Invalid, State,
+        city_mapping, co_mapping, cofeat_mapping, inter_mapping, has_nulls_mapping,
     )
 
 
@@ -30,6 +30,7 @@ city_shp = os.path.join(shp_path, 'cities', 'cities.shp')
 co_shp = os.path.join(shp_path, 'counties', 'counties.shp')
 inter_shp = os.path.join(shp_path, 'interstates', 'interstates.shp')
 invalid_shp = os.path.join(shp_path, 'invalid', 'emptypoints.shp')
+has_nulls_shp = os.path.join(shp_path, 'has_nulls', 'has_nulls.shp')
 
 # Dictionaries to hold what's expected in the county shapefile.
 NAMES = ['Bexar', 'Galveston', 'Harris', 'Honolulu', 'Pueblo']
@@ -317,6 +318,19 @@ class LayerMapTest(TestCase):
         lm.save(silent=True, strict=True)
         self.assertEqual(City.objects.count(), 1)
         self.assertEqual(City.objects.all()[0].name, "Zürich")
+
+    def test_nulls_imported(self):
+        "Test LayerMapping import of a shapefile with null values."
+        lm = LayerMapping(HasNulls, has_nulls_shp, has_nulls_mapping)
+        lm.save()
+        self.assertEqual(3, HasNulls.objects.count(),
+                         'Should have three polygons in has_nulls.shp')
+        self.assertEqual(1, HasNulls.objects.filter(some_number=0).count(),
+                         'Should have one polygon with a zero some_number field')
+        self.assertEqual(1, HasNulls.objects.filter(some_number__isnull=True).count(),
+                         'Should have one polygon with a null some_number field')
+        self.assertEqual(1, HasNulls.objects.filter(name__isnull=True).count(),
+                         'Should have one polygon with a null name field')
 
 
 class OtherRouter(object):
