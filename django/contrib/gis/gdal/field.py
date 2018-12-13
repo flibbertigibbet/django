@@ -47,10 +47,14 @@ class Field(GDALBase):
     # #### Field Methods ####
     def as_double(self):
         "Retrieves the Field's value as a double (float)."
+        if not capi.is_field_set(self._feat.ptr, self._index):
+            return None
         return capi.get_field_as_double(self._feat.ptr, self._index)
 
     def as_int(self, is_64=False):
         "Retrieves the Field's value as an integer."
+        if not capi.is_field_set(self._feat.ptr, self._index):
+            return None
         if is_64:
             return capi.get_field_as_integer64(self._feat.ptr, self._index)
         else:
@@ -58,11 +62,15 @@ class Field(GDALBase):
 
     def as_string(self):
         "Retrieves the Field's value as a string."
+        if not capi.is_field_set(self._feat.ptr, self._index):
+            return None
         string = capi.get_field_as_string(self._feat.ptr, self._index)
         return force_text(string, encoding=self._feat.encoding, strings_only=True)
 
     def as_datetime(self):
         "Retrieves the Field's value as a tuple of date & time components."
+        if not capi.is_field_set(self._feat.ptr, self._index):
+            return None
         yy, mm, dd, hh, mn, ss, tz = [c_int() for i in range(7)]
         status = capi.get_field_as_datetime(
             self._feat.ptr, self._index, byref(yy), byref(mm), byref(dd),
