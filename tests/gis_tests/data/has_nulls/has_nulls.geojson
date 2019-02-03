@@ -58,7 +58,6 @@
       "type": "Feature",
       "properties": {
         "uuid": "fa2ba67c-a135-4338-b924-a9622b5d869f",
-        "integer": null,
         "num": null
       },
       "geometry": {

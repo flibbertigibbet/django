@@ -3,7 +3,7 @@ import re
 from datetime import datetime
 
 from django.contrib.gis.gdal import (
-    DataSource, Envelope, GDALException, OGRGeometry,
+    DataSource, Envelope, GDALException, GDAL_VERSION, OGRGeometry,
 )
 from django.contrib.gis.gdal.field import (
     OFTDateTime, OFTInteger, OFTReal, OFTString,
