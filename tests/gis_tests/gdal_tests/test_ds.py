@@ -67,7 +67,7 @@ ds_list = (
             'name': OFTString,
             'num': OFTReal,
             'integer': OFTInteger,
-            'datetime': OFTDateTime,
+            'datetime': OFTDateTime if GDAL_VERSION >= (2, 0) else OFTString,
             'boolean': OFTInteger,
         },
         extent=(-75.274200, 39.846504, -74.959717, 40.119040),  # Got extent from QGIS
@@ -82,9 +82,11 @@ ds_list = (
             'integer': [5, None, 8],
             'boolean': [True, None, False],
             'datetime': [
-                datetime.strptime('1994-08-14T11:32:14', datetime_format),
+                datetime.strptime('1994-08-14T11:32:14', datetime_format)
+                if GDAL_VERSION >= (2, 0) else '1994-08-14T11:32:14+0000',
                 None,
-                datetime.strptime('2018-11-29T03:02:52', datetime_format),
+                datetime.strptime('2018-11-29T03:02:52', datetime_format)
+                if GDAL_VERSION >= (2, 0) else '2018-11-29T03:02:52+0000',
             ]
         },
         fids=range(3),

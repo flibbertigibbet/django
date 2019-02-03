@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from django.contrib.gis.gdal import GDAL_VERSION
 
 
 class NamedModel(models.Model):
@@ -72,7 +73,10 @@ class Invalid(models.Model):
 class HasNulls(models.Model):
     uuid = models.UUIDField(primary_key=True, editable=False)
     geom = models.PolygonField(srid=4326, blank=True, null=True)
-    datetime = models.DateTimeField(blank=True, null=True)
+    if GDAL_VERSION >= (2, 0):
+        datetime = models.DateTimeField(blank=True, null=True)
+    else:
+        datetime = models.CharField(blank=True, null=True, max_length=255)
     integer = models.IntegerField(blank=True, null=True)
     num = models.FloatField(blank=True, null=True)
     boolean = models.BooleanField(blank=True, null=True)
@@ -82,7 +86,10 @@ class HasNulls(models.Model):
 class DoesNotAllowNulls(models.Model):
     uuid = models.UUIDField(primary_key=True, editable=False)
     geom = models.PolygonField(srid=4326)
-    datetime = models.DateTimeField()
+    if GDAL_VERSION >= (2, 0):
+        datetime = models.DateTimeField()
+    else:
+        datetime = models.CharField(max_length=255)
     integer = models.IntegerField()
     num = models.FloatField()
     boolean = models.BooleanField()
