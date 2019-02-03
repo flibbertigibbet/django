@@ -358,7 +358,7 @@ class LayerMapping:
         elif isinstance(ogr_field, OFTReal) and isinstance(model_field, models.DecimalField):
             try:
                 # Creating an instance of the Decimal value to use.
-                d = Decimal(str(ogr_field.value))
+                d = Decimal(str(ogr_field.value)) if ogr_field.value else None
             except DecimalInvalidOperation:
                 raise InvalidDecimal('Could not construct decimal from: %s' % ogr_field.value)
 
@@ -389,7 +389,7 @@ class LayerMapping:
         elif isinstance(ogr_field, (OFTReal, OFTString)) and isinstance(model_field, models.IntegerField):
             # Attempt to convert any OFTReal and OFTString value to an OFTInteger.
             try:
-                val = int(ogr_field.value)
+                val = int(ogr_field.value) if ogr_field.value else None
             except ValueError:
                 raise InvalidInteger('Could not construct integer from: %s' % ogr_field.value)
         else:
