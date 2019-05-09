@@ -68,11 +68,12 @@ get_field_as_datetime = int_output(
 )
 get_field_as_double = double_output(lgdal.OGR_F_GetFieldAsDouble, [c_void_p, c_int])
 get_field_as_integer = int_output(lgdal.OGR_F_GetFieldAsInteger, [c_void_p, c_int])
-get_field_as_integer64 = int64_output(lgdal.OGR_F_GetFieldAsInteger64, [c_void_p, c_int])
 if GDAL_VERSION >= (2, 2):
     is_field_set = bool_output(lgdal.OGR_F_IsFieldSetAndNotNull, [c_void_p, c_int])
+    get_field_as_integer64 = int64_output(lgdal.OGR_F_GetFieldAsInteger64, [c_void_p, c_int])
 else:
     is_field_set = bool_output(lgdal.OGR_F_IsFieldSet, [c_void_p, c_int])
+    get_field_as_integer64 = get_field_as_integer
 get_field_as_string = const_string_output(lgdal.OGR_F_GetFieldAsString, [c_void_p, c_int])
 get_field_index = int_output(lgdal.OGR_F_GetFieldIndex, [c_void_p, c_char_p])
 
