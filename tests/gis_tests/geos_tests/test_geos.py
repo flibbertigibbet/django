@@ -5,7 +5,7 @@ import pickle
 import random
 from binascii import a2b_hex
 from io import BytesIO
-from unittest import mock
+from unittest import mock, skipIf
 
 from django.contrib.gis import gdal
 from django.contrib.gis.geos import (
@@ -132,6 +132,7 @@ class GEOSTest(SimpleTestCase, TestDataMixin):
                 self.assertEqual(srid, poly.shell.srid)
                 self.assertEqual(srid, fromstr(poly.ewkt).srid)  # Checking export
 
+    @skipIf(gdal.GDAL_VERSION < (2, 0), "GDAL < 2.0 does not properly recognize all GeoJSON types")
     def test_json(self):
         "Testing GeoJSON input/output (via GDAL)."
         for g in self.geometries.json_geoms:

@@ -1,6 +1,7 @@
 import os
 import re
 from datetime import datetime
+from unittest import skipIf
 
 from django.contrib.gis.gdal import (
     DataSource, Envelope, GDALException, GDAL_VERSION, OGRGeometry,
@@ -38,7 +39,7 @@ ds_list = (
     ),
     TestDS(
         'test_vrt', ext='vrt', nfeat=3, nfld=3, geom='POINT', gtype='Point25D',
-        driver='OGR_VRT',
+        driver='OGR_VRT' if GDAL_VERSION >= (2, 0) else 'VRT',
         fields={
             'POINT_X': OFTString,
             'POINT_Y': OFTString,
@@ -68,7 +69,7 @@ ds_list = (
             'num': OFTReal,
             'integer': OFTInteger,
             'datetime': OFTDateTime if GDAL_VERSION >= (2, 0) else OFTString,
-            'boolean': OFTInteger,
+            'boolean': OFTInteger
         },
         extent=(-75.274200, 39.846504, -74.959717, 40.119040),  # Got extent from QGIS
         field_values={
@@ -218,6 +219,7 @@ class DataSourceTest(SimpleTestCase):
         # Same issue for Feature/Field objects, see #18640
         self.assertEqual(str(lyr[0]['str']), "1")
 
+    @skipIf(GDAL_VERSION < (2, 0), "GDAL < 2.0 does not properly recognize all GeoJSON types")
     def test04_features(self):
         "Testing Data Source Features."
         for source in ds_list:

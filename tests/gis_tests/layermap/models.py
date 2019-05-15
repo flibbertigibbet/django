@@ -28,7 +28,10 @@ class CountyFeat(NamedModel):
 class City(NamedModel):
     name_txt = models.TextField(default='')
     name_short = models.CharField(max_length=5)
-    population = models.IntegerField()
+    if GDAL_VERSION >= (2, 0):
+        population = models.IntegerField()
+    else:
+        population = models.FloatField()
     density = models.DecimalField(max_digits=7, decimal_places=1)
     dt = models.DateField()
     point = models.PointField()
@@ -77,7 +80,10 @@ class HasNulls(models.Model):
         datetime = models.DateTimeField(blank=True, null=True)
     else:
         datetime = models.CharField(blank=True, null=True, max_length=255)
-    integer = models.IntegerField(blank=True, null=True)
+    if GDAL_VERSION >= (2, 0):
+        integer = models.IntegerField(blank=True, null=True)
+    else:
+        integer = models.FloatField(blank=True, null=True)
     num = models.FloatField(blank=True, null=True)
     boolean = models.BooleanField(blank=True, null=True)
     name = models.CharField(blank=True, null=True, max_length=20)
@@ -90,7 +96,10 @@ class DoesNotAllowNulls(models.Model):
         datetime = models.DateTimeField()
     else:
         datetime = models.CharField(max_length=255)
-    integer = models.IntegerField()
+    if GDAL_VERSION >= (2, 0):
+        integer = models.IntegerField()
+    else:
+        integer = models.FloatField()
     num = models.FloatField()
     boolean = models.BooleanField()
     name = models.CharField(max_length=20)

@@ -1,6 +1,7 @@
 import os
 import re
 from io import StringIO
+from unittest import skipIf
 
 from django.contrib.gis.gdal import GDAL_VERSION, Driver, GDALException
 from django.contrib.gis.utils.ogrinspect import ogrinspect
@@ -59,6 +60,7 @@ class InspectDbTests(TestCase):
 @modify_settings(
     INSTALLED_APPS={'append': 'django.contrib.gis'},
 )
+@skipIf(GDAL_VERSION < (2, 0), "GDAL < 2.0 does not properly recognize all GeoJSON types")
 class OGRInspectTest(SimpleTestCase):
     expected_srid = 'srid=-1' if GDAL_VERSION < (2, 2) else ''
     maxDiff = 1024
